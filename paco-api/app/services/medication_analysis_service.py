@@ -27,6 +27,8 @@ Flag definitions:
 - "not surfaced": The topic did not come up in this conversation.
 - "concern flagged": A concern in this domain was identified that warrants provider attention.
 
+For each domain, also write a physician_suggestion: a 1-2 sentence plain-language, actionable recommendation for the provider summarizing what to follow up on based on the patient's flagged responses. If no concern was flagged in a domain, say so briefly and, where useful, name one item worth confirming at the next visit. Do not introduce concerns the patient did not raise.
+
 ---
 
 Domain 1 - General Beliefs About Treatment
@@ -67,22 +69,26 @@ Output Format (JSON only, no additional text):
     "general_beliefs": {{
       "finding": "What the patient shared about their general beliefs, or 'Not discussed' if this did not come up.",
       "flag": "surfaced or not surfaced or concern flagged",
-      "details": ["Specific items or direct quotes from the conversation that support the finding"]
+      "details": ["Specific items or direct quotes from the conversation that support the finding"],
+      "physician_suggestion": "1-2 sentence plain-language, actionable recommendation for the provider based on this domain's flagged items, or a brief note that no follow-up is indicated"
     }},
     "self_management": {{
       "finding": "What the patient shared about day-to-day self-management challenges, or 'Not discussed'.",
       "flag": "surfaced or not surfaced or concern flagged",
-      "details": ["Specific items or direct quotes"]
+      "details": ["Specific items or direct quotes"],
+      "physician_suggestion": "1-2 sentence plain-language, actionable recommendation for the provider based on this domain's flagged items, or a brief note that no follow-up is indicated"
     }},
     "specific_beliefs": {{
       "finding": "What the patient shared about intentional decisions to skip, reduce, or stop medication, or 'Not discussed'.",
       "flag": "surfaced or not surfaced or concern flagged",
-      "details": ["Specific items or direct quotes"]
+      "details": ["Specific items or direct quotes"],
+      "physician_suggestion": "1-2 sentence plain-language, actionable recommendation for the provider based on this domain's flagged items, or a brief note that no follow-up is indicated"
     }},
     "provider_relationship": {{
       "finding": "What the patient shared about their relationship with their healthcare team, or 'Not discussed'.",
       "flag": "surfaced or not surfaced or concern flagged",
-      "details": ["Specific items or direct quotes"]
+      "details": ["Specific items or direct quotes"],
+      "physician_suggestion": "1-2 sentence plain-language, actionable recommendation for the provider based on this domain's flagged items, or a brief note that no follow-up is indicated"
     }}
   }},
   "overall_summary": "2-3 sentence summary of the patient's medication adherence situation for the provider.",

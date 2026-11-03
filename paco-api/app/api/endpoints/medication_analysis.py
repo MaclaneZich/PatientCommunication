@@ -25,6 +25,11 @@ router = APIRouter()
 
 VALID_FLAGS = {"surfaced", "not surfaced", "concern flagged"}
 
+# Fallback physician_suggestion text used when the LLM output omits the field
+# (including analyses stored before the field existed) or cannot be parsed.
+MISSING_SUGGESTION = "No suggestion generated for this domain."
+PARSE_ERROR_SUGGESTION = "No suggestion available; the analysis output could not be parsed."
+
 
 def parse_domain(domains_data: dict, key: str) -> QuilamDomain:
     """Parse a single QUILAM domain, tolerant of LLM output variance.
@@ -53,9 +58,13 @@ def parse_domain(domains_data: dict, key: str) -> QuilamDomain:
         else:
             details = [str(item) for item in details]
 
-        return QuilamDomain(finding=finding, flag=flag, details=details)
+        physician_suggestion = d.get("physician_suggestion") or MISSING_SUGGESTION
+        if not isinstance(physician_suggestion, str):
+            physician_suggestion = str(physician_suggestion)
+
+        return QuilamDomain(finding=finding, flag=flag, details=details, physician_suggestion=physician_suggestion)
     except (ValueError, TypeError, AttributeError):
-        return QuilamDomain(finding="Could not parse this domain.", flag="not surfaced", details=[])
+        return QuilamDomain(finding="Could not parse this domain.", flag="not surfaced", details=[], physician_suggestion=PARSE_ERROR_SUGGESTION)
 
 
 def parse_analysis_result(detailed_analysis: str) -> QuilamAnalysisResult:
@@ -99,10 +108,10 @@ def parse_analysis_result(detailed_analysis: str) -> QuilamAnalysisResult:
     except (json.JSONDecodeError, ValueError, TypeError):
         return QuilamAnalysisResult(
             domains=QuilamDomains(
-                general_beliefs=QuilamDomain(finding="Error parsing analysis results.", flag="not surfaced"),
-                self_management=QuilamDomain(finding="Error parsing analysis results.", flag="not surfaced"),
-                specific_beliefs=QuilamDomain(finding="Error parsing analysis results.", flag="not surfaced"),
-                provider_relationship=QuilamDomain(finding="Error parsing analysis results.", flag="not surfaced")
+                general_beliefs=QuilamDomain(finding="Error parsing analysis results.", flag="not surfaced", physician_suggestion=PARSE_ERROR_SUGGESTION),
+                self_management=QuilamDomain(finding="Error parsing analysis results.", flag="not surfaced", physician_suggestion=PARSE_ERROR_SUGGESTION),
+                specific_beliefs=QuilamDomain(finding="Error parsing analysis results.", flag="not surfaced", physician_suggestion=PARSE_ERROR_SUGGESTION),
+                provider_relationship=QuilamDomain(finding="Error parsing analysis results.", flag="not surfaced", physician_suggestion=PARSE_ERROR_SUGGESTION)
             ),
             overall_summary="Error parsing analysis results. Check detailed_analysis field.",
             key_concerns=["Analysis parsing error"],

@@ -7,10 +7,13 @@ from datetime import datetime
 
 
 class QuilamDomain(BaseModel):
-    """Finding and flag for a single QUILAM domain"""
+    """Finding, flag, and physician suggestion for a single QUILAM domain"""
     finding: str
     flag: Literal["surfaced", "not surfaced", "concern flagged"]
     details: List[str] = Field(default_factory=list)
+    # Plain-language, actionable 1-2 sentence recommendation for the provider,
+    # generated per domain from the patient's flagged responses
+    physician_suggestion: str
 
 
 class QuilamDomains(BaseModel):
